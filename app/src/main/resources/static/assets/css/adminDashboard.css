@@ -92,3 +92,90 @@ Admin Button (`.adminBtn`)
 
 
 */
+
+/* === Global Reset === */
+/* Purpose: Ensure consistent layout across all browsers */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* === Base HTML & Body === */
+/* Purpose: Full height layout and standard font */
+html, body {
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+/* === Main Layout Wrapper === */
+/* Purpose: Flexible vertical layout filling full screen */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* full viewport height */
+}
+
+/* === Section Heading (h2) === */
+/* Purpose: Prominent headings */
+h2 {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 50px;
+  color: #003e3e;
+  text-align: center;
+}
+
+/* === Main Content Section === */
+/* Purpose: Layout main content with padding and background */
+.main-content {
+  flex-grow: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  background-image: url("index.png"); /* update path if needed */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* === Primary Button === */
+/* Purpose: Prominent interactive buttons */
+button {
+  background-color: #A62B1F;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  margin-top: 20px;
+  width: 200px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+/* Keep same red background on hover */
+button:hover {
+  background-color: #A62B1F;
+}
+
+/* === Admin Button (.adminBtn) === */
+/* Purpose: Secondary button style for admin actions */
+.adminBtn {
+  background-color: #f4f4f4;
+  color: #333;
+  font-weight: bold;
+  width: 110px;
+  padding: 10px 0;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* On hover, text color changes to brand red */
+.adminBtn:hover {
+  color: #A62B1F;
+}

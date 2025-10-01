@@ -99,3 +99,90 @@ This file defines the Doctor Dashboard interface, allowing doctors to view and m
 
     * Properly close the `<body>` and `<html>` tags to complete the document.
  -->
+
+
+<!-- doctorDashboard.html -->
+
+<!--
+This file defines the Doctor Dashboard interface, allowing doctors to view and manage their patient appointments,
+search records, and access patient prescriptions.
+-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Metadata and character encoding -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" th:href="@{/assets/images/logo/logo.png}" />
+
+    <!-- Page Title -->
+    <title>Doctor Dashboard</title>
+
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" th:href="@{/assets/css/adminDashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/doctorDashboard.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+
+    <!-- JavaScript Utilities and Components -->
+    <script th:src="@{/js/render.js}" defer></script>
+    <script th:src="@{/js/util.js}" defer></script>
+
+    <!-- Layout Components -->
+    <script th:src="@{/js/components/header.js}" defer></script>
+    <script th:src="@{/js/components/footer.js}" defer></script>
+    <script th:src="@{/js/components/patientRows.js}" defer></script>
+
+    <!-- Dashboard Logic -->
+    <script type="module" th:src="@{/js/services/patientServices.js}" defer></script>
+    <script type="module" th:src="@{/js/services/doctorDashboard.js}" defer></script>
+</head>
+
+<body onload="renderContent()">
+<!-- Page Container -->
+<div class="container">
+    <!-- Page Wrapper -->
+    <div class="wrapper">
+
+        <!-- Header Placeholder -->
+        <div id="header"></div>
+
+        <!-- Main Dashboard Content -->
+        <div class="main-content">
+            <!-- Search Bar -->
+            <input type="text" id="searchBar" class="searchBar" placeholder="Search Bar for custom output" />
+
+            <!-- Filter Controls -->
+            <div class="filters">
+                <button id="todayButton" class="action-btn">Today’s Appointments</button>
+                <input type="date" id="datePicker" />
+            </div>
+
+            <!-- Patient Table -->
+            <section class="patient-table-section">
+                <table id="patientTable">
+                    <thead>
+                    <tr>
+                        <th>Patient ID</th>
+                        <th>Name</th>
+                        <th>Phone No.</th>
+                        <th>Email</th>
+                        <th>Prescription</th>
+                    </tr>
+                    </thead>
+                    <tbody id="patientTableBody">
+                    <!-- Rows will be injected dynamically by patientRows.js -->
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <!-- Footer Placeholder -->
+        <div id="footer"></div>
+
+    </div> <!-- End Wrapper -->
+</div> <!-- End Container -->
+</body>
+</html>
