@@ -1,33 +1,75 @@
 package com.project.back_end.controllers;
 
+import com.project.back_end.model.Prescription;
+import com.project.back_end.services.PrescriptionService;
+import com.project.back_end.services.Service;
+import com.project.back_end.services.AppointmentService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("${api.path}prescription")
 public class PrescriptionController {
-    
-// 1. Set Up the Controller Class:
-//    - Annotate the class with `@RestController` to define it as a REST API controller.
-//    - Use `@RequestMapping("${api.path}prescription")` to set the base path for all prescription-related endpoints.
-//    - This controller manages creating and retrieving prescriptions tied to appointments.
 
+    private final PrescriptionService prescriptionService;
+    private final Service service;
+    private final AppointmentService appointmentService;
 
-// 2. Autowire Dependencies:
-//    - Inject `PrescriptionService` to handle logic related to saving and fetching prescriptions.
-//    - Inject the shared `Service` class for token validation and role-based access control.
-//    - Inject `AppointmentService` to update appointment status after a prescription is issued.
+    public PrescriptionController(PrescriptionService prescriptionService,
+                                  Service service,
+                                  AppointmentService appointmentService) {
+        this.prescriptionService = prescriptionService;
+        this.service = service;
+        this.appointmentService = appointmentService;
+    }
 
+    /**
+     * Save Prescription
+     * Accessible only to doctors
+     */
+    @PostMapping("/{token}")
+    public ResponseEntity<?> savePrescription(@PathVariable String token,
+                                              @RequestBody Prescription prescription) {
+        if (!service.validateToken(token, "doctor")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Invalid or expired token"));
+        }
 
-// 3. Define the `savePrescription` Method:
-//    - Handles HTTP POST requests to save a new prescription for a given appointment.
-//    - Accepts a validated `Prescription` object in the request body and a doctor’s token as a path variable.
-//    - Validates the token for the `"doctor"` role.
-//    - If the token is valid, updates the status of the corresponding appointment to reflect that a prescription has been added.
-//    - Delegates the saving logic to `PrescriptionService` and returns a response indicating success or failure.
+        try {
+            prescriptionService.savePrescription(prescription);
 
+            // Optionally update appointment status to reflect prescription added
+            appointmentService.updateAppointmentStatus(prescription.getAppointmentId(), "PRESCRIBED");
 
-// 4. Define the `getPrescription` Method:
-//    - Handles HTTP GET requests to retrieve a prescription by its associated appointment ID.
-//    - Accepts the appointment ID and a doctor’s token as path variables.
-//    - Validates the token for the `"doctor"` role using the shared service.
-//    - If the token is valid, fetches the prescription using the `PrescriptionService`.
-//    - Returns the prescription details or an appropriate error message if validation fails.
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(Map.of("message", "Prescription saved successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to save prescription"));
+        }
+    }
 
+    /**
+     * Get Prescription by Appointment ID
+     * Accessible only to doctors
+     */
+    @GetMapping("/{appointmentId}/{token}")
+    public ResponseEntity<?> getPrescription(@PathVariable Long appointmentId,
+                                             @PathVariable String token) {
+        if (!service.validateToken(token, "doctor")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Invalid or expired token"));
+        }
 
+        Prescription prescription = prescriptionService.getPrescription(appointmentId);
+        if (prescription == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "No prescription found for this appointment"));
+        }
+
+        return ResponseEntity.ok(prescription);
+    }
 }
